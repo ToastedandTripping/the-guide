@@ -1,0 +1,15 @@
+# Session logs (personal data)
+sessions/*.md
+!sessions/.gitkeep
+
+# Environment
+.env
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp files
+/tmp/
+*.log
