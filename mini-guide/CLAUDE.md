@@ -8,6 +8,12 @@
 4. **Always record sources.** Every external fact must include the source link or document path. Unsourced facts are untraceable.
 5. **Present the ideal version first.** If tradeoffs exist, present the best possible version and let the user decide whether to scope down.
 
+## Pre-Action Gates
+
+**Before any email:** Format properly. Match the user's voice. Multiple recipients go in BCC, never in To.
+**Before saying "I can't":** Check available tools, MCP servers, and CLI utilities first.
+**Before plan mode:** The hook injects a workflow. Follow it step by step. Do not skip phases.
+
 ## User Profile
 
 <!-- Fill this in on first session -->

@@ -8,7 +8,7 @@ Everything in The Guide derives from three primitives:
 
 **2. State File** -- Persistent file with a freshness contract (how often updated, when loaded). Survives sessions and compaction. Source of truth for continuity.
 
-**3. Plan** -- Implementation spec with dependency graph and success criteria. Gates execution through specialist relay. Critic-reviewed before implementation.
+**3. Plan** -- Implementation spec with dependency graph and success criteria. Gates execution through specialist relay. Stress-tested before implementation.
 
 ## Two Configurations
 
@@ -16,7 +16,7 @@ Everything in The Guide derives from three primitives:
 
 Target user: marketer, journalist, small business owner, freelancer. Someone who wants an AI thinking partner with personality, not just a chatbot.
 
-- **CLAUDE.md:** ~60 lines. Core rules, user profile (fill-in template), condensed personality, condensed philosophy.
+- **CLAUDE.md:** ~60 lines. Core rules, pre-action gates, user profile (fill-in template), condensed personality, condensed philosophy.
 - **Startup:** ~800-1,500 tokens. Date + current.md + session log tail.
 - **4 specialists:** Creator (builds/writes), Critic (reviews), Strategist (plans/analyzes), Researcher (finds/verifies).
 - **Relay:** 4 stages. Creator implements -> Critic reviews -> Creator fixes -> Report.
@@ -28,7 +28,8 @@ Target user: marketer, journalist, small business owner, freelancer. Someone who
 
 Target user: technical founder, operator, or team lead running a complex business through an AI chief of staff.
 
-- **CLAUDE.md:** Layered. Core (~50 lines always) + personality (rules/, always) + philosophy (rules/, plan work only) + email voice (rules/, client work only).
+- **CLAUDE.md:** Core rules + pre-action gates (~30 lines, always loaded) + user profile + session flow. Behavioral rules that gate actions are inline. Reference material (detailed voice guides, integration docs) stays in rules/ and memory files.
+- **Rules files:** Personality (always loaded), philosophy (plan-work scoped), integration reference (always loaded).
 - **Startup:** ~2,800-8,500 tokens depending on session type.
 - **16+ specialists:** Domain experts (engineering, law, finance, HR, sales, design, etc.) plus relay trio (Builder, Reviewer, Designer).
 - **Relay:** 8 stages with architecture alignment, design specs, fidelity gates.
@@ -44,8 +45,28 @@ Target user: technical founder, operator, or team lead running a complex busines
 4. Work returns to orchestrator between relay stages
 5. State files are source of truth for session continuity
 6. Plans stress-tested before relay execution
-7. CLAUDE.md core layer under 60 lines
+7. Behavioral rules inline in CLAUDE.md; reference material in files
 8. Startup loads only what the current task requires
+
+## Inline vs Pointer: The Compliance Rule
+
+**Hard-won lesson:** LLMs follow direct commands in CLAUDE.md far more reliably than pointers to other files. "No em dashes" works. "Read file X which tells you not to use em dashes" doesn't. The pointer adds a step that gets skipped.
+
+**The principle:** If a rule gates an action (do this BEFORE doing that), it must be inline in CLAUDE.md. If a rule is reference material (the full list of voice guidelines, command syntax, integration details), it can live in a file.
+
+**Why not put everything inline?** Once CLAUDE.md gets too long, rules at the bottom get less attention. There's a sweet spot: critical rules and pre-action gates in the first 30 lines, everything else either in always-loaded rules files or on-demand reference.
+
+**What belongs inline:**
+- Don'ts (critical rules: never fabricate, never send unauthorized)
+- Pre-action gates (before email: do X. Before deploy: do Y.)
+- Tool selection rules (use gws to send, not MCP)
+
+**What belongs in files:**
+- Personality voice and examples
+- Philosophy and adversarial collaboration details
+- Detailed formatting guides
+- Integration command references
+- Domain-specific knowledge
 
 ## Progressive Disclosure
 
@@ -53,9 +74,9 @@ Context loads in tiers:
 
 | Tier | What | When | Token Cost |
 |------|------|------|-----------|
-| 0 | CLAUDE.md core (rules, profile, commands) | Every message | ~500-900 |
-| 1 | Personality, integrations (.claude/rules/, no paths) | Session start | ~600 |
-| 2 | Philosophy, email voice (.claude/rules/, path-scoped) | When working on matching files | ~120-715 |
+| 0 | CLAUDE.md (rules, gates, profile, commands) | Every message | ~700-1,000 |
+| 1 | Personality, integration reference (.claude/rules/, no paths) | Session start | ~600 |
+| 2 | Philosophy (.claude/rules/, path-scoped) | When working on matching files | ~400 |
 | 3 | State files, specialist knowledge | On-demand | Variable |
 
 Uses Claude Code native mechanisms:
@@ -101,3 +122,4 @@ Architecture decisions informed by research across 6 domains (100+ sources, Marc
 - Specialist routing (CrewAI, LangGraph, AutoGen, Google/MIT scaling research)
 - CLAUDE.md best practices (Anthropic docs, community patterns)
 - Hooks system (25 events, progressive disclosure via InstructionsLoaded)
+- **Inline vs pointer compliance** (empirical finding, March 2026: behavioral rules in pointers get skipped ~80% of the time)
