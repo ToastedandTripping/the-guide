@@ -43,7 +43,7 @@ Target user: technical founder, operator, or team lead running a complex busines
 3. Specialists stateless per invocation
 4. Work returns to orchestrator between relay stages
 5. State files are source of truth for session continuity
-6. Plans critic-reviewed before relay execution
+6. Plans stress-tested before relay execution
 7. CLAUDE.md core layer under 60 lines
 8. Startup loads only what the current task requires
 
